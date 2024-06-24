@@ -1,0 +1,119 @@
+<div
+  class="modal fade"
+  tabindex="-1"
+  role="dialog"
+  [ngClass]="{ show: isVisible }"
+  [ngStyle]="{ display: isVisible ? 'block' : 'none' }"
+>
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">
+          {{ isEditMode ? "Edit brainiac" : "Add new brainiac" }}
+        </h5>
+        <button
+          type="button"
+          class="btn-close"
+          aria-label="Close"
+          (click)="closeModal()"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <form (ngSubmit)="saveUser(userForm)" #userForm="ngForm" novalidate>
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <label for="firstName" class="form-label"
+                >First name <span class="text-danger">*</span></label
+              >
+              <input
+                type="text"
+                class="form-control"
+                id="firstName"
+                [(ngModel)]="user.first_name"
+                name="firstName"
+                required
+                [ngClass]="{
+                  'is-invalid':
+                    userForm.submitted && userForm.controls['firstName'].invalid
+                }"
+              />
+              <div
+                *ngIf="
+                  userForm.submitted && userForm.controls['firstName']?.invalid
+                "
+                class="invalid-feedback"
+              >
+                First name is required.
+              </div>
+            </div>
+            <div class="col-md-6">
+              <label for="lastName" class="form-label"
+                >Last name <span class="text-danger">*</span></label
+              >
+              <input
+                type="text"
+                class="form-control"
+                id="lastName"
+                [(ngModel)]="user.last_name"
+                name="lastName"
+                required
+                [ngClass]="{
+                  'is-invalid':
+                    userForm.submitted && userForm.controls['lastName'].invalid
+                }"
+              />
+              <div
+                *ngIf="
+                  userForm.submitted && userForm.controls['lastName']?.invalid
+                "
+                class="invalid-feedback"
+              >
+                Last name is required.
+              </div>
+            </div>
+          </div>
+          <div class="mb-3">
+            <label for="email" class="form-label"
+              >E-mail <span class="text-danger">*</span></label
+            >
+            <input
+              type="email"
+              class="form-control"
+              id="email"
+              [(ngModel)]="user.email"
+              name="email"
+              required
+              email
+              [ngClass]="{
+                'is-invalid':
+                  userForm.submitted && userForm.controls['email'].invalid
+              }"
+            />
+            <div
+              *ngIf="userForm.submitted && userForm.controls['email']?.invalid"
+              class="invalid-feedback"
+            >
+              A valid email is required.
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              (click)="closeModal()"
+            >
+              Close
+            </button>
+            <button
+              type="submit"
+              class="btn btn-primary"
+              [disabled]="userForm.invalid"
+            >
+              Save
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
