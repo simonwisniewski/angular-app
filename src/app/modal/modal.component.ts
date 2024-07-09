@@ -13,6 +13,7 @@ import { UserService } from '../user.service';
 export class ModalComponent {
   @Input() user: any = {};
   @Input() isVisible = false;
+  @Input() isSaving = false;
   @Input() isEditMode = false;
   @Output() userSaved = new EventEmitter<void>();
   @Output() closed = new EventEmitter<void>();
@@ -20,18 +21,20 @@ export class ModalComponent {
   constructor(private userService: UserService) {}
 
   saveUser(form: NgForm) {
-    if (form.invalid) {
-      return;
-    }
+    if (!form.invalid) {
+      this.isSaving = true;
 
     if (this.isEditMode) {
       this.userService.updateUser(this.user).subscribe(() => {
+        this.isSaving = false;
         this.userSaved.emit();
       });
     } else {
       this.userService.addUser(this.user).subscribe(() => {
+        this.isSaving = false;
         this.userSaved.emit();
       });
+    }
     }
   }
 

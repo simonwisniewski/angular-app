@@ -1,58 +1,46 @@
 <div class="container mt-4">
-  <div class="d-flex justify-content-between align-items-center mb-3">
-    <h2 class="header-custom">
-      <i class="fa fa-users"></i> List of smart guys
-    </h2>
-    <button
-      class="btn btn-dark"
-      (click)="openAddUserModal()"
-      style="background-color: #44001a; border-color: #44001a"
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h2 class="header-custom">
+        <i class="fa fa-users"></i> List of smart guys
+      </h2>
+      <button
+        class="btn btn-dark d-flex justify-content-between align-items-center gap-2"
+        (click)="openAddUserModal()"
+        style="background-color: #44001a; border-color: #44001a"
+      >
+        <i class="fa fa-plus"></i> Add brainiac
+      </button>
+    </div>
+    <div class="table-responsive">
+      <table class="table table-hover table-striped">
+        <thead class="custom-thead">
+          <tr>
+            <th>Id</th>
+            <th>First name</th>
+            <th>Last name</th>
+            <th>E-mail</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+            <tr
+            app-user-row
+            *ngFor="let user of users"
+            class="align-middle"
+            [user]="user"
+            (edit)="openEditUserModal($event)"
+            (delete)="deleteUser($event)"
+          ></tr>
+        </tbody>
+      </table>
+    </div>
+    <app-modal
+      *ngIf="isModalVisible"
+      [user]="selectedUser"
+      [isEditMode]="isEditMode"
+      (userSaved)="onUserSaved()"
+      (closed)="onModalClosed()"
     >
-      <i class="fa fa-plus"></i> Add brainiac
-    </button>
+    </app-modal>
   </div>
-  <div class="table-responsive">
-    <table class="table table-hover table-striped">
-      <thead class="table-danger">
-        <tr>
-          <th>Id</th>
-          <th>First name</th>
-          <th>Last name</th>
-          <th>E-mail</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let user of users" class="align-middle">
-          <td class="d-flex justify-content-center align-items-center gap-2">
-            <span>{{ user.id }}</span>
-            <img
-              [src]="user.avatar"
-              alt="{{ user.first_name }}'s avatar"
-              width="50"
-            />
-          </td>
-          <td>{{ user.first_name }}</td>
-          <td>{{ user.last_name }}</td>
-          <td>{{ user.email }}</td>
-          <td>
-            <button class="btn btn-link p-0" (click)="openEditUserModal(user)">
-              <i class="fa fa-pencil text-custom" aria-hidden="true"></i>
-            </button>
-            <button class="btn btn-link p-0 ml-2" (click)="deleteUser(user)">
-              <i class="fa fa-trash text-custom" aria-hidden="true"></i>
-            </button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-  <app-modal
-    [user]="selectedUser"
-    [isVisible]="isModalVisible"
-    [isEditMode]="isEditMode"
-    (userSaved)="onUserSaved()"
-    (closed)="onModalClosed()"
-  >
-  </app-modal>
-</div>
+  

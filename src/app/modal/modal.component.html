@@ -1,9 +1,8 @@
 <div
-  class="modal fade"
+  class="modal fade show"
   tabindex="-1"
   role="dialog"
-  [ngClass]="{ show: isVisible }"
-  [ngStyle]="{ display: isVisible ? 'block' : 'none' }"
+  style="display: block"
 >
   <div class="modal-dialog" role="document">
     <div class="modal-content">
@@ -19,7 +18,7 @@
         ></button>
       </div>
       <div class="modal-body">
-        <form (ngSubmit)="saveUser(userForm)" #userForm="ngForm" novalidate>
+        <form (ngSubmit)="saveUser(userForm)" #userForm="ngForm">
           <div class="row mb-3">
             <div class="col-md-6">
               <label for="firstName" class="form-label"
@@ -31,6 +30,7 @@
                 id="firstName"
                 [(ngModel)]="user.first_name"
                 name="firstName"
+                placeholder="Type in the first name"
                 required
                 [ngClass]="{
                   'is-invalid':
@@ -54,6 +54,7 @@
                 type="text"
                 class="form-control"
                 id="lastName"
+                placeholder="Type in the last name"
                 [(ngModel)]="user.last_name"
                 name="lastName"
                 required
@@ -72,7 +73,7 @@
               </div>
             </div>
           </div>
-          <div class="mb-3">
+          <div class="mb-5">
             <label for="email" class="form-label"
               >E-mail <span class="text-danger">*</span></label
             >
@@ -81,7 +82,8 @@
               class="form-control"
               id="email"
               [(ngModel)]="user.email"
-              name="email"
+                placeholder="Type in the email"
+                name="email"
               required
               email
               [ngClass]="{
@@ -107,7 +109,7 @@
             <button
               type="submit"
               class="btn btn-primary"
-              [disabled]="userForm.invalid"
+              [disabled]="isSaving"
             >
               Save
             </button>

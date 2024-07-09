@@ -2,36 +2,37 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
+import { User } from './user.model';
 
 @Injectable({
   providedIn: 'root',
 })
 export class UserService {
   private apiUrl = 'https://reqres.in/api/users';
-  private users: any[] = [];
+  private users: User[] = [];
 
   constructor(private http: HttpClient) {}
 
-  fetchInitialUsers(): Observable<any[]> {
+  fetchInitialUsers(): Observable<User[]> {
     return this.http.get<any>(this.apiUrl).pipe(
-      map((response) => response.data),
+      map((response) => response.data as User[]),
       tap((users) => (this.users = users)),
-      catchError(this.handleError<any[]>('fetchInitialUsers', []))
+      catchError(this.handleError<User[]>('fetchInitialUsers', []))
     );
   }
 
-  getUsers(): Observable<any[]> {
+  getUsers(): Observable<User[]> {
     return of(this.users);
   }
 
-  addUser(user: any): Observable<any> {
+  addUser(user: any): Observable<User> {
     return this.http.post<any>(this.apiUrl, user).pipe(
       map((response) => {
         const newId =
           this.users.length > 0
             ? Math.max(...this.users.map((u) => u.id)) + 1
             : 1;
-        const newUser = {
+        const newUser: User = {
           ...user,
           id: newId,
           avatar: user.avatar || 'default-avatar-url',
@@ -39,11 +40,11 @@ export class UserService {
         this.users.push(newUser);
         return newUser;
       }),
-      catchError(this.handleError<any>('addUser'))
+      catchError(this.handleError<User>('addUser'))
     );
   }
 
-  updateUser(user: any): Observable<any> {
+  updateUser(user: User): Observable<User> {
     return this.http.put<any>(`${this.apiUrl}/${user.id}`, user).pipe(
       map((response) => {
         const index = this.users.findIndex((u) => u.id === user.id);
@@ -52,17 +53,17 @@ export class UserService {
         }
         return user;
       }),
-      catchError(this.handleError<any>('updateUser'))
+      catchError(this.handleError<User>('updateUser'))
     );
   }
 
-  deleteUser(userId: number): Observable<any> {
+  deleteUser(userId: number): Observable<number> {
     return this.http.delete<any>(`${this.apiUrl}/${userId}`).pipe(
       map(() => {
         this.users = this.users.filter((u) => u.id !== userId);
         return userId;
       }),
-      catchError(this.handleError<any>('deleteUser'))
+      catchError(this.handleError<number>('deleteUser'))
     );
   }
 

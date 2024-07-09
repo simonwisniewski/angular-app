@@ -1,0 +1,23 @@
+<td class="d-flex justify-content-between align-items-center gap-2">
+  <span>{{ user.id }}</span>
+  <img
+    [src]="user.avatar"
+    alt="{{ user.first_name }}'s avatar"
+    width="50"
+  />
+</td>
+<td>{{ user.first_name }}</td>
+<td>{{ user.last_name }}</td>
+<td>{{ user.email }}</td>
+<td>
+  <div class="d-flex justify-content-center align-items-center gap-2">
+    <button class="btn btn-link p-0" (click)="edit.emit(user)">
+      <!-- <i class="fa fa-pencil text-custom" aria-hidden="true"></i> -->
+       <fa-icon [icon]="pen2square" class="text-custom"></fa-icon>
+    </button>
+    <button class="btn btn-link p-0 ml-2" (click)="delete.emit(user)">
+      <i class="fa fa-trash text-custom" aria-hidden="true"></i>
+    </button>
+  </div>
+  
+</td>
