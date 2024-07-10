@@ -1,23 +1,33 @@
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { UserService } from '../user.service';
 import { CommonModule } from '@angular/common';
-import { Component, Input } from '@angular/core';
-import { NgbActiveModal, NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-confirm-delete-modal',
-  standalone: true,
-  imports: [CommonModule, NgbModalModule],
   templateUrl: './confirm-delete-modal.component.html',
-  styleUrl: './confirm-delete-modal.component.scss'
+  styleUrls: ['./confirm-delete-modal.component.scss'],
+  standalone: true,
+  imports: [CommonModule],
 })
 export class ConfirmDeleteModalComponent {
-  @Input() message: string = '';
+  @Input() user: any = {};
+  @Output() userDeleted = new EventEmitter<void>();
+  @Output() closed = new EventEmitter<void>();
 
-  constructor(public activeModal: NgbActiveModal) {}
+  constructor(
+    private userService: UserService,
+    public activeModal: NgbActiveModal
+  ) {}
 
-  confirm() {
-    this.activeModal.close("confirm");
+  deleteUser() {
+    this.userService.deleteUser(this.user.id).subscribe(() => {
+      this.userDeleted.emit();
+      this.activeModal.close('User Deleted');
+    });
   }
-  cancel() {
-    this.activeModal.dismiss("cancel");
+
+  closeModal() {
+    this.activeModal.dismiss('Modal Closed');
   }
 }

@@ -39,6 +39,9 @@ export class UserListComponent implements OnInit {
     const modalRef = this.modalService.open(ModalComponent);
     modalRef.componentInstance.user = this.selectedUser;
     modalRef.componentInstance.isEditMode = this.isEditMode;
+    modalRef.componentInstance.userSaved.subscribe(() => {
+      this.onUserSaved();
+    });
   }
 
   openEditUserModal(user: User): void {
@@ -47,32 +50,29 @@ export class UserListComponent implements OnInit {
     const modalRef = this.modalService.open(ModalComponent);
     modalRef.componentInstance.user = this.selectedUser;
     modalRef.componentInstance.isEditMode = this.isEditMode;
+
+    modalRef.componentInstance.userSaved.subscribe(() => {
+      this.onUserSaved();
+    });
   }
 
   ConfirmDeleteUser(user: User): void {
-    this.userToDelete = user;
+    this.userToDelete = { ...user };
     const modalRef = this.modalService.open(ConfirmDeleteModalComponent);
-    modalRef.componentInstance.message = `Czy napewno chcesz usunąć ${user.first_name} ${user.last_name}?`;
+    modalRef.componentInstance.user = this.userToDelete;
 
-    modalRef.result.then(
-      (result: string) => {
-        if (result === 'confirm') {
-          this.deleteUser(user);
-        }
-      },
-      (reason) => {
-        // dismiss action
-      }
-    );
-  }
-
-  deleteUser(user: User): void {
-    this.userService.deleteUser(user.id).subscribe(() => {
-      this.users = this.users.filter((u) => u.id !== user.id);
+    modalRef.componentInstance.userDeleted.subscribe(() => {
+      this.onUserDeleted();
     });
   }
 
   onUserSaved(): void {
+    this.userService.getUsers().subscribe((users) => {
+      this.users = users;
+    });
+  }
+
+  onUserDeleted(): void {
     this.userService.getUsers().subscribe((users) => {
       this.users = users;
     });

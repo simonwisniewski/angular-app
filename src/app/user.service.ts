@@ -25,16 +25,12 @@ export class UserService {
     return of(this.users);
   }
 
-  addUser(user: any): Observable<User> {
+  addUser(user: User): Observable<User> {
     return this.http.post<any>(this.apiUrl, user).pipe(
       map((response) => {
-        const newId =
-          this.users.length > 0
-            ? Math.max(...this.users.map((u) => u.id)) + 1
-            : 1;
         const newUser: User = {
           ...user,
-          id: newId,
+          id: response.id,
           avatar: user.avatar || 'default-avatar-url',
         };
         this.users.push(newUser);
@@ -46,7 +42,7 @@ export class UserService {
 
   updateUser(user: User): Observable<User> {
     return this.http.put<any>(`${this.apiUrl}/${user.id}`, user).pipe(
-      map((response) => {
+      map(() => {
         const index = this.users.findIndex((u) => u.id === user.id);
         if (index !== -1) {
           this.users[index] = user;
@@ -57,16 +53,14 @@ export class UserService {
     );
   }
 
-  deleteUser(userId: number): Observable<number> {
-    return this.http.delete<any>(`${this.apiUrl}/${userId}`).pipe(
+  deleteUser(userId: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${userId}`).pipe(
       map(() => {
         this.users = this.users.filter((u) => u.id !== userId);
-        return userId;
-      }),
-      catchError(this.handleError<number>('deleteUser'))
+        return;
+      })
     );
   }
-
   private handleError<T>(operation = 'operation', result?: T) {
     return (error: any): Observable<T> => {
       console.error(`${operation} failed: ${error.message}`);
